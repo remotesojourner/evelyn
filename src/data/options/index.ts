@@ -1,4 +1,3 @@
-import "chrome-extension-async";
 import { push } from "connected-react-router";
 import { Epic, ofType } from "redux-observable";
 import { from } from "rxjs";
@@ -14,7 +13,7 @@ const initialState: State = {
 	default: "reddit",
 	hideYoutubeComments: true,
 	hideZeroCommentPosts: false,
-	postSort: "top"
+	postSort: "top",
 };
 
 export const reducer = (state = initialState, action: Action): State => {
@@ -31,11 +30,11 @@ export const reducer = (state = initialState, action: Action): State => {
 export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 	action$.pipe(
 		ofType(ActionTypes.REQUEST, ActionTypes.UPDATE, ActionTypes.SYNCED),
-		mergeMap(action => {
+		mergeMap((action) => {
 			switch (action.type) {
 				case ActionTypes.REQUEST: {
 					return from(chrome.storage.sync.get(initialState)).pipe(
-						map(res => update(res))
+						map((res) => update(res))
 					);
 				}
 

@@ -3,8 +3,8 @@ import { from, throwError } from "rxjs";
 import { ajax as _ajax } from "rxjs/ajax";
 import { map, mergeMap } from "rxjs/operators";
 
-import { FetchRequest, FetchResponse } from "background";
 import { Comment, Me } from "data/reddit";
+import { FetchRequest, FetchResponse } from "service-worker";
 
 const handleJsonError = (selector: (response: any) => any) => (res: any) => {
 	const error = res.json.errors[0];

@@ -1,12 +1,12 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 
 	"name": "Karamel: View Reddit comments on YouTube™",
 	"short_name": "Karamel",
 	"description": "Step up your viewing experience by embedding relevant Reddit comments under YouTube videos.",
-	"version": "1.5.0",
+	"version": "2.0.0",
 
-	"browser_action": {
+	"action": {
 		"default_icon": "icon-48.png"
 	},
 	"icons": {
@@ -22,13 +22,13 @@
 		}
 	],
 	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
+		"service_worker": "service-worker.js"
 	},
 	"options_ui": {
 		"page": "options.html",
 		"open_in_tab": false
 	},
 
-	"permissions": ["https://www.reddit.com/", "storage"]
+	"permissions": ["storage"],
+	"host_permissions": ["https://www.reddit.com/"]
 }

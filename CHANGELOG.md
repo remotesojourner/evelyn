@@ -1,3 +1,9 @@
+# v2.0.0
+
+-   Update to Chrome Manifest v3
+-   Update some option text for clarity
+-   Show Reddit posts on videos with comments disabled (thanks @jlvcm on GitHub)
+
 # v1.5.0
 
 -   Add option to hide posts with zero comments (thanks @mpizzaca on GitHub)

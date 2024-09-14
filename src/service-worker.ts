@@ -1,5 +1,3 @@
-import "chrome-extension-async";
-
 export interface FetchRequest {
 	method: "GET" | "POST";
 	url: string;
@@ -16,18 +14,16 @@ chrome.runtime.onMessage.addListener(
 	(request: FetchRequest, _, sendResponse) => {
 		fetch(BASE_URL + request.url, {
 			credentials: "include",
-			method: request.method
+			method: request.method,
 		})
-			.then(async res => {
+			.then(async (res) => {
 				if (!res.ok) sendResponse({ error: await res.text() });
 				else sendResponse({ data: await res.json() });
 			})
-			.catch(error => sendResponse({ error }));
+			.catch((error) => sendResponse({ error }));
 
 		return true;
 	}
 );
 
-chrome.browserAction.onClicked.addListener(() =>
-	chrome.runtime.openOptionsPage()
-);
+chrome.action.onClicked.addListener(() => chrome.runtime.openOptionsPage());
