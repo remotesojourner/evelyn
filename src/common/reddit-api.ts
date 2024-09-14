@@ -14,7 +14,7 @@ const handleJsonError = (selector: (response: any) => any) => (res: any) => {
 
 const ajax = (opts: FetchRequest) =>
 	from<Promise<FetchResponse>>(chrome.runtime.sendMessage(opts)).pipe(
-		mergeMap(res => (res.error ? throwError(res.error) : [res.data]))
+		mergeMap((res) => (res.error ? throwError(res.error) : [res.data]))
 	);
 
 export function comment(modhash: string, parentId: string, text: string) {
@@ -22,17 +22,17 @@ export function comment(modhash: string, parentId: string, text: string) {
 		api_type: "json",
 		text,
 		thing_id: parentId,
-		uh: modhash
+		uh: modhash,
 	};
 	return ajax({
 		url: `/api/comment.json?${stringify(query)}`,
-		method: "POST"
-	}).pipe<Comment>(mergeMap(handleJsonError(res => res.things[0].data)));
+		method: "POST",
+	}).pipe<Comment>(mergeMap(handleJsonError((res) => res.things[0].data)));
 }
 
 export function getMe() {
 	return ajax({ url: `/api/me.json`, method: "GET" }).pipe(
-		map(res => (res.data.modhash ? (res.data as Me) : undefined))
+		map((res) => (res.data.modhash ? (res.data as Me) : undefined))
 	);
 }
 
@@ -47,14 +47,14 @@ export function getMoreChildren(
 		children: children.join(","),
 		id,
 		link_id: linkId,
-		sort
+		sort,
 	};
 	return ajax({
 		url: `/api/morechildren.json?${stringify(query)}`,
-		method: "GET"
+		method: "GET",
 	}).pipe<Comment[]>(
 		mergeMap(
-			handleJsonError(res =>
+			handleJsonError((res) =>
 				res ? res.things.map((c: any) => c.data) : []
 			)
 		)
@@ -62,24 +62,25 @@ export function getMoreChildren(
 }
 
 export function getPost(postId: string, sort: string) {
-	return ajax({ url: `/${postId}.json?sort=${sort}`, method: "GET" }).pipe(
-		map(res => res)
-	);
+	return ajax({
+		url: `/comments/${postId}.json?sort=${sort}`,
+		method: "GET",
+	}).pipe(map((res) => res));
 }
 
 export function save(modhash: string, id: string, unsave?: boolean) {
 	const query = { id, uh: modhash };
 	return ajax({
 		url: `/api/${unsave ? "unsave" : "save"}?${stringify(query)}`,
-		method: "POST"
+		method: "POST",
 	});
 }
 
 export function search(query: QuerySearch) {
 	return ajax({
 		url: `/search.json?${stringify(query as any)}`,
-		method: "GET"
-	}).pipe(map(res => res.data.children.map((c: any) => c.data)));
+		method: "GET",
+	}).pipe(map((res) => res.data.children.map((c: any) => c.data)));
 }
 
 export function vote(modhash: string, id: string, dir: number) {
@@ -87,7 +88,7 @@ export function vote(modhash: string, id: string, dir: number) {
 		dir,
 		id,
 		rank: 2,
-		uh: modhash
+		uh: modhash,
 	};
 	return ajax({ url: `/api/vote.json?${stringify(query)}`, method: "POST" });
 }
