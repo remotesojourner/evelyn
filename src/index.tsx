@@ -44,7 +44,7 @@ const observer = new MutationObserver(() => {
 	}
 });
 
-if (location.protocol === "chrome-extension:") {
+if (window.OPTIONS_PAGE) {
 	renderRoot(document.getElementById("tube-mount")!);
 } else {
 	observer.observe(document.body, { childList: true, subtree: true });

@@ -1,13 +1,16 @@
 const { join, resolve } = require("path");
 const createMinifier = require("css-loader-minify-class");
 
+if (!process.env.BROWSER) throw new Error("set $BROWSER to chrome or firefox");
+
 const ROOT = "./src";
 const paths = {
-	dist: resolve("dist"),
+	assets: `${ROOT}/assets`,
+	dist: resolve(`dist-${process.env.BROWSER}`),
 	src: ROOT,
 	stylesName: "styles",
 	static: `${ROOT}/assets/static`,
-	tsIndex: `${ROOT}/index.tsx`
+	tsIndex: `${ROOT}/index.tsx`,
 };
 
 module.exports = {
@@ -25,20 +28,21 @@ module.exports = {
 					localIdentName: "[name]__[local]--[hash:2]",
 					importLoaders: 1,
 					minimize: process.env.NODE_ENV === "production",
-					getLocalIdent: (process.env.NODE_ENV === "production")
-						? createMinifier()
-						: undefined
-				}
+					getLocalIdent:
+						process.env.NODE_ENV === "production"
+							? createMinifier()
+							: undefined,
+				},
 			},
 
 			{
 				loader: "./tools/scope-hack-loader",
-				options: {prepend: "#tube-mount"}
+				options: { prepend: "#tube-mount" },
 			},
 
 			{
 				loader: "postcss-loader",
-				options: require("./postcss.config")
+				options: require("./postcss.config"),
 			},
 
 			"resolve-url-loader",
@@ -47,9 +51,14 @@ module.exports = {
 				loader: "sass-loader",
 				options: {
 					sourceMap: true,
-					includePaths: [resolve(__dirname, join("..", paths.src, paths.stylesName))]
-				}
-			}
+					includePaths: [
+						resolve(
+							__dirname,
+							join("..", paths.src, paths.stylesName)
+						),
+					],
+				},
+			},
 		],
 		images: [
 			"url-loader?limit=10000",
@@ -58,10 +67,10 @@ module.exports = {
 				loader: "image-webpack-loader",
 				options: {
 					// Only optimize in production.
-					bypassOnDebug: true
-				}
-			}
-		]
+					bypassOnDebug: true,
+				},
+			},
+		],
 	},
-	paths: paths
+	paths: paths,
 };

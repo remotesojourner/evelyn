@@ -12,20 +12,23 @@ module.exports = Object.assign(base, {
 				exclude: /node_modules/,
 				loader: "tslint-loader",
 				options: {
-					emitErrors: true
-				}
+					emitErrors: true,
+				},
 			},
 
 			{
 				test: /\.tsx?$/,
 				exclude: /node_modules/,
-				use: "ts-loader"
-			}
-		])
+				loader: "ts-loader",
+				options: {
+					transpileOnly: true,
+				},
+			},
+		]),
 	},
 	plugins: base.plugins.concat([
 		new webpack.DefinePlugin({
-			"process.env.NODE_ENV": `"production"`
-		})
-	])
+			"process.env.NODE_ENV": `"production"`,
+		}),
+	]),
 });

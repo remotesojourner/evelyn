@@ -10,9 +10,19 @@ _Contributions welcome! If you have any questions related to development, a bug 
 
 ## Dev Setup
 
-```
+Requires **node v8** currently as we use some older libraries.
+
+```bash
 npm install
-npm start
+# set BROWSER to chrome or firefox
+BROWSER=chrome npm start
 ```
 
-Then load the `dist` folder as an unpacked extension in Chrome.
+Then load the `dist` folder as an unpacked extension.
+
+## Build
+
+```bash
+BROWSER=firefox npm run build
+BROWSER=firefox ./package.sh
+```

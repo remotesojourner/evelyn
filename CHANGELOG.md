@@ -1,9 +1,10 @@
 # v2.0.0
 
 -   Fix comments not loading (thanks @brussell98 on GitHub)
+-   Show Reddit posts on videos with comments disabled (thanks @jlvcm on GitHub)
 -   Update to Chrome Manifest v3
 -   Update some option text for clarity
--   Show Reddit posts on videos with comments disabled (thanks @jlvcm on GitHub)
+-   Support Firefox
 
 # v1.5.0
 

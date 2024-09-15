@@ -23,12 +23,11 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 	componentWillMount() {
 		this.props.requestMe();
 		this.props.requestOptions();
-		if (location.protocol === "chrome-extension:")
-			this.props.push("/options");
+		if (window.OPTIONS_PAGE) this.props.push("/options");
 	}
 
 	componentWillReceiveProps(nextProps: ReduxProps) {
-		if (location.protocol === "chrome-extension:") return;
+		if (window.OPTIONS_PAGE) return;
 
 		// If there are no posts for the next video, switch to YouTube comments.
 		if (!nextProps.postsLoading && nextProps.posts.length === 0) {
@@ -43,7 +42,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 	render() {
 		return (
 			<main className={style.container}>
-				{location.protocol !== "chrome-extension:" && (
+				{!window.OPTIONS_PAGE && (
 					<>
 						<VideoListener />
 						<ToggleButton

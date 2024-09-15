@@ -45,7 +45,7 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 				}
 
 				case ActionTypes.SYNCED: {
-					return location.protocol === "chrome-extension:"
+					return window.OPTIONS_PAGE
 						? []
 						: [push("/" + state$.value.options.default)];
 				}

@@ -41,5 +41,14 @@ module.exports = {
 			verbose: false,
 		}),
 		new CopyPlugin([{ from: common.paths.static }]),
+		new CopyPlugin([
+			{
+				from: join(
+					common.paths.assets,
+					`manifest-${process.env.BROWSER}.json`
+				),
+				to: "manifest.json",
+			},
+		]),
 	],
 };
