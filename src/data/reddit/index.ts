@@ -3,12 +3,13 @@ import {
 	getMoreChildren,
 	getPost,
 	search,
-	vote
+	vote,
 } from "common/reddit-api";
 import { Epic, ofType } from "redux-observable";
+import { of } from "rxjs";
+import { catchError, map, mergeMap } from "rxjs/operators";
 
 import { State as GlobalState } from "data";
-import { map, mergeMap } from "rxjs/operators";
 import {
 	Action,
 	ActionTypes,
@@ -16,7 +17,7 @@ import {
 	receiveMe,
 	receiveMoreComments,
 	receivePosts,
-	receiveVote
+	receiveVote,
 } from "./actions";
 import { Comment, State } from "./model";
 
@@ -25,7 +26,7 @@ const initialState: State = {
 	commentsLoading: false,
 	moreCommentsLoading: [],
 	posts: [],
-	postsLoading: false
+	postsLoading: false,
 };
 
 const findId = (
@@ -33,9 +34,11 @@ const findId = (
 	id: string,
 	currentChildren?: { data: Comment }[]
 ): Comment | undefined => {
-	if (!currentChildren) currentChildren = comments.map(c => ({ data: c }));
+	if (!currentChildren) currentChildren = comments.map((c) => ({ data: c }));
 
-	const found = currentChildren.find(c => c && c.data && c.data.name === id);
+	const found = currentChildren.find(
+		(c) => c && c.data && c.data.name === id
+	);
 	if (found) {
 		return found.data;
 	} else {
@@ -69,7 +72,7 @@ export const reducer = (state = initialState, action: Action): State => {
 			return Object.assign({}, state, {
 				moreCommentsLoading: state.moreCommentsLoading.concat(
 					action.payload.id
-				)
+				),
 			});
 		}
 
@@ -81,9 +84,9 @@ export const reducer = (state = initialState, action: Action): State => {
 			return Object.assign({}, state, {
 				comments: {
 					...state.comments,
-					[action.payload.linkId]: action.payload.comments
+					[action.payload.linkId]: action.payload.comments,
 				},
-				commentsLoading: false
+				commentsLoading: false,
 			});
 		}
 
@@ -98,7 +101,7 @@ export const reducer = (state = initialState, action: Action): State => {
 			const parent = findId(comments, action.payload.parentId);
 			if (!parent) {
 				delete comments[
-					comments.findIndex(c => c && c.name === action.payload.id)
+					comments.findIndex((c) => c && c.name === action.payload.id)
 				];
 
 				if (!action.payload.prepend)
@@ -115,8 +118,8 @@ export const reducer = (state = initialState, action: Action): State => {
 					)
 				];
 
-				const addedChildren = action.payload.comments.map(c => ({
-					data: c
+				const addedChildren = action.payload.comments.map((c) => ({
+					data: c,
 				}));
 				if (!action.payload.prepend)
 					children = children.concat(addedChildren);
@@ -128,18 +131,18 @@ export const reducer = (state = initialState, action: Action): State => {
 			return Object.assign({}, state, {
 				comments: {
 					...state.comments,
-					[action.payload.linkId]: comments
+					[action.payload.linkId]: comments,
 				},
 				moreCommentsLoading: state.moreCommentsLoading.filter(
-					id => id !== action.payload.id
-				)
+					(id) => id !== action.payload.id
+				),
 			});
 		}
 
 		case ActionTypes.RECEIVE_POSTS: {
 			return Object.assign({}, state, {
 				posts: action.payload.posts,
-				postsLoading: false
+				postsLoading: false,
 			});
 		}
 
@@ -148,7 +151,7 @@ export const reducer = (state = initialState, action: Action): State => {
 				state.comments[action.payload.linkId];
 			const thing = comments
 				? findId(comments, action.payload.id)
-				: state.posts.find(p => p.name === action.payload.id);
+				: state.posts.find((p) => p.name === action.payload.id);
 			const trueScore =
 				thing!.score -
 				(thing!.likes === true ? 1 : thing!.likes === false ? -1 : 0);
@@ -165,15 +168,15 @@ export const reducer = (state = initialState, action: Action): State => {
 
 			if (!action.payload.linkId) {
 				return Object.assign({}, state, {
-					posts: state.posts.slice(0)
+					posts: state.posts.slice(0),
 				});
 			} else {
 				return Object.assign({}, state, {
 					comments: {
 						...state.comments,
 						[action.payload.linkId]:
-							comments || state.comments[action.payload.linkId]
-					}
+							comments || state.comments[action.payload.linkId],
+					},
 				});
 			}
 		}
@@ -192,24 +195,24 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 			ActionTypes.REQUEST_POSTS,
 			ActionTypes.REQUEST_VOTE
 		),
-		mergeMap(action => {
+		mergeMap((action) => {
 			switch (action.type) {
 				case ActionTypes.REQUEST_COMMENTS: {
 					return getPost(
 						action.payload.linkId.replace("t3_", ""),
 						action.payload.sort
 					).pipe(
-						map(res =>
+						map((res) =>
 							res[1].data.children.map((c: any) => c.data)
 						),
-						map(comments =>
+						map((comments) =>
 							receiveComments(comments, action.payload.linkId)
 						)
 					);
 				}
 
 				case ActionTypes.REQUEST_ME: {
-					return getMe().pipe(map(me => receiveMe(me)));
+					return getMe().pipe(map((me) => receiveMe(me)));
 				}
 
 				case ActionTypes.REQUEST_MORE_COMMENTS: {
@@ -220,12 +223,12 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 						children,
 						sort
 					).pipe(
-						map(comments =>
+						map((comments) =>
 							receiveMoreComments({
 								comments,
 								id: action.payload.id,
 								linkId: action.payload.linkId,
-								parentId: action.payload.parentId
+								parentId: action.payload.parentId,
 							})
 						)
 					);
@@ -235,8 +238,11 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 					return search({
 						q: `url:'${action.payload.videoId}'`,
 						sort: action.payload.sort,
-						type: "link"
-					}).pipe(map(posts => receivePosts(posts)));
+						type: "link",
+					}).pipe(
+						map((posts) => receivePosts(posts)),
+						catchError(() => of(receivePosts([])))
+					);
 				}
 
 				case ActionTypes.REQUEST_VOTE: {

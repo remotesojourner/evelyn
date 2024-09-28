@@ -1,6 +1,7 @@
 # v2.0.1
 
 -   Fix Reddit comments not showing up when you navigate to a video from the homepage
+-   Better error handling when Reddit is down, so you're not stuck on a loading screen
 
 # v2.0.0
 

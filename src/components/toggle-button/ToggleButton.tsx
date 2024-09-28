@@ -45,13 +45,12 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	}
 
 	render() {
-		const { disabled, loading, path } = this.props;
+		const { disabled, path } = this.props;
 
 		return (
 			<button
 				className={classNames(style.button, {
 					[style.disabled]: disabled,
-					[style.loading]: loading,
 				})}
 				onMouseDown={this.onMouseDown}
 				onClick={this.onButtonClick}
@@ -65,7 +64,6 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 
 export interface ToggleButtonProps {
 	disabled?: boolean;
-	loading?: boolean;
 }
 
 const mapStateToProps = (state: State) => ({

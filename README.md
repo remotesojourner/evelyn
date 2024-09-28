@@ -2,7 +2,8 @@
 
 **Karamel** is an open-source extension that adds Reddit comments to any YouTube videos you watch.
 
-[**Chrome Web Store**](https://chrome.google.com/webstore/detail/halllmdjninjohpckldgkaolbhgkfnpe)
+[**Download for Chrome**](https://chrome.google.com/webstore/detail/halllmdjninjohpckldgkaolbhgkfnpe)
+[**Download for Firefox**](https://addons.mozilla.org/en-US/firefox/addon/karamel/)
 
 [Changelog](https://github.com/odensc/karamel/blob/master/CHANGELOG.md)
 
