@@ -2,10 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
+import * as elements from "common/elements";
 import { returnOf } from "common/util";
 import { State } from "data";
 import { update } from "data/video";
-import { getCurrentLayer } from "layer";
 
 const CHECK_INTERVAL = 1000;
 
@@ -19,13 +19,12 @@ class VideoListener extends React.Component<
 		const search = new URLSearchParams(location.search);
 		const id = search.get("v");
 		const description =
-			document.querySelector(
-				getCurrentLayer().getVideoDescriptionQuery()
-			)!.textContent || "";
+			document.querySelector(elements.VIDEO_DESCRIPTION)?.textContent ||
+			"";
 		if (this.props.id !== id || this.props.description !== description) {
 			this.props.update({
 				description,
-				id
+				id,
 			});
 		}
 	};
@@ -50,14 +49,14 @@ export interface VideoListenerProps {}
 const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 	bindActionCreators(
 		{
-			update
+			update,
 		},
 		dispatch
 	);
 
 const mapStateToProps = (state: State) => ({
 	description: state.video.description,
-	id: state.video.id
+	id: state.video.id,
 });
 
 type ReduxProps = typeof StateProps & typeof DispatchProps;

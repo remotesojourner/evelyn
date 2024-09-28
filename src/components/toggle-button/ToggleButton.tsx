@@ -4,15 +4,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch } from "redux";
 
+import * as elements from "common/elements";
 import { returnOf } from "common/util";
 import { State } from "data";
-import { getCurrentLayer } from "layer";
 
 import redditLogo from "assets/reddit.svg";
 import youtubeLogo from "assets/youtube.svg";
 import style from "./ToggleButton.scss";
-
-const layer = getCurrentLayer();
 
 class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	onButtonClick = () => {
@@ -30,7 +28,7 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 
 	updateCommentDisplay(path: string) {
 		const comments = document.querySelector(
-			layer.getCommentsContainerQuery()
+			elements.COMMENTS_CONTAINER
 		) as HTMLElement;
 		// Use opacity to hide comments, this prevents rendering artifacts.
 		if (!this.props.hideYoutubeComments || path === "/youtube") {
@@ -53,7 +51,7 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 			<button
 				className={classNames(style.button, {
 					[style.disabled]: disabled,
-					[style.loading]: loading
+					[style.loading]: loading,
 				})}
 				onMouseDown={this.onMouseDown}
 				onClick={this.onButtonClick}
@@ -72,11 +70,11 @@ export interface ToggleButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	hideYoutubeComments: state.options.hideYoutubeComments,
-	path: state.router.location.pathname
+	path: state.router.location.pathname,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	push: (path: string) => dispatch(push(path))
+	push: (path: string) => dispatch(push(path)),
 });
 
 type ReduxProps = typeof StateProps & typeof DispatchProps;

@@ -1,3 +1,7 @@
+# v2.0.1
+
+-   Fix Reddit comments not showing up when you navigate to a video from the homepage
+
 # v2.0.0
 
 -   Fix comments not loading (thanks @brussell98 on GitHub)

@@ -4,15 +4,14 @@ import { render } from "react-dom";
 import { I18nextProvider } from "react-i18next";
 import { Provider } from "react-redux";
 
+import * as elements from "common/elements";
 import i18n from "common/i18n";
-import { getCurrentLayer } from "layer";
 import Router from "router";
 import configureStore from "store/configureStore";
 import "styles/global.scss";
 
 const history = createMemoryHistory();
 const store = configureStore(history);
-const layer = getCurrentLayer();
 
 const renderRoot = (mountElement: HTMLElement) => {
 	render(
@@ -34,12 +33,11 @@ const insertMountElement = (before: Element) => {
 };
 
 const observer = new MutationObserver(() => {
-	if (document.querySelector(layer.getWatchQuery())) {
+	const commentsEl = document.querySelector(elements.COMMENTS_CONTAINER);
+	if (commentsEl) {
 		observer.disconnect();
 
-		const mount = insertMountElement(
-			document.querySelector(layer.getCommentsContainerQuery())!
-		);
+		const mount = insertMountElement(commentsEl);
 		renderRoot(mount);
 	}
 });
