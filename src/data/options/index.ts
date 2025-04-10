@@ -1,4 +1,4 @@
-import { push } from "connected-react-router";
+
 import { Epic, ofType } from "redux-observable";
 import { from } from "rxjs";
 import { map, mergeMap } from "rxjs/operators";
@@ -10,8 +10,6 @@ import { State } from "./model";
 
 const initialState: State = {
 	commentSort: "best",
-	default: "reddit",
-	hideYoutubeComments: true,
 	hideZeroCommentPosts: false,
 	postSort: "top",
 };
@@ -27,7 +25,7 @@ export const reducer = (state = initialState, action: Action): State => {
 	}
 };
 
-export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
+export const epic: Epic<Action, any, GlobalState> = (action$) =>
 	action$.pipe(
 		ofType(ActionTypes.REQUEST, ActionTypes.UPDATE, ActionTypes.SYNCED),
 		mergeMap((action) => {
@@ -45,9 +43,7 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 				}
 
 				case ActionTypes.SYNCED: {
-					return window.OPTIONS_PAGE
-						? []
-						: [push("/" + state$.value.options.default)];
+					return [];
 				}
 			}
 		})

@@ -1,3 +1,1 @@
-export const COMMENTS_CONTAINER = "#comments";
-
-export const VIDEO_DESCRIPTION = "#description";
+export const WATCH_INFO = "watch-info";

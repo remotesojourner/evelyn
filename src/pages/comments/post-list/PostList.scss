@@ -17,13 +17,8 @@
 	&::-webkit-scrollbar-thumb {
 		background: rgba(180, 180, 180, 0.5);
 		border-radius: 0;
-		border-left: 1px solid #ddd;
-		border-right: 1px solid #ddd;
-	}
-
-	@at-root [dark] &::-webkit-scrollbar-thumb {
-		border-left-color: #4a4a4a;
-		border-right-color: #4a4a4a;
+		border-left: 1px solid #4a4a4a;
+		border-right: 1px solid #4a4a4a;
 	}
 
 	&::-webkit-scrollbar-thumb:hover {
@@ -38,19 +33,14 @@
 }
 
 .item {
-	background: #f1f1f1;
-	border: 1px solid #ddd;
+	background: #333;
+	border: 1px solid #4a4a4a;
 	display: flex;
 	flex: 1;
 	font-size: 12px;
 	justify-content: center;
 	padding: 5px 10px;
 	transition: background 0.1s ease;
-
-	@at-root [dark] & {
-		background: #333;
-		border-color: #4a4a4a;
-	}
 
 	span {
 		color: #888;
@@ -63,19 +53,11 @@
 	&:hover,
 	&:active,
 	&.active {
-		background: #fff;
-
-		@at-root [dark] & {
-			background: #111;
-		}
+		background: #111;
 	}
 
 	&.active {
-		border-bottom-color: #fff;
-
-		@at-root [dark] & {
-			border-bottom-color: #111;
-		}
+		border-bottom-color: #111;
 	}
 
 	&.official {

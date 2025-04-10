@@ -4,7 +4,7 @@ import { render } from "react-dom";
 import { I18nextProvider } from "react-i18next";
 import { Provider } from "react-redux";
 
-import * as elements from "common/elements";
+import { WATCH_INFO } from "common/elements";
 import i18n from "common/i18n";
 import Router from "router";
 import configureStore from "store/configureStore";
@@ -24,20 +24,21 @@ const renderRoot = (mountElement: HTMLElement) => {
 	);
 };
 
-const insertMountElement = (before: Element) => {
+const insertMountElement = (parent: Element) => {
 	const element = document.createElement("div");
 	element.id = "tube-mount";
-	before.parentNode!.insertBefore(element, before);
+	element.classList.add("standard-width-container");
+	element.classList.add("row");
+	parent.appendChild(element);
 
 	return element;
 };
 
 const observer = new MutationObserver(() => {
-	const commentsEl = document.querySelector(elements.COMMENTS_CONTAINER);
-	if (commentsEl) {
+	const watchInfoSection = document.getElementById(WATCH_INFO);
+	if (watchInfoSection) {
 		observer.disconnect();
-
-		const mount = insertMountElement(commentsEl);
+		const mount = insertMountElement(watchInfoSection);
 		renderRoot(mount);
 	}
 });

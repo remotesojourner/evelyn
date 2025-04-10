@@ -40,18 +40,9 @@ class Options extends React.Component<OptionsProps, {}> {
 					</p>
 				)}
 				<p>
-					<b>{t("default")}:</b>{" "}
-					<select
-						onChange={this.onChange.bind(null, "default")}
-						value={options.default}
-					>
-						<option value="reddit">Reddit</option>
-						<option value="youtube">YouTube</option>
-					</select>
-				</p>
-				<p>
 					<b>{t("commentSort")}:</b>{" "}
 					<select
+						title={t("commentSort")}
 						onChange={this.onChange.bind(null, "commentSort")}
 						value={options.commentSort}
 					>
@@ -63,19 +54,9 @@ class Options extends React.Component<OptionsProps, {}> {
 					</select>
 				</p>
 				<p>
-					<b>{t("hideYoutubeComments")}:</b>{" "}
-					<input
-						type="checkbox"
-						onChange={this.onChange.bind(
-							null,
-							"hideYoutubeComments"
-						)}
-						checked={options.hideYoutubeComments}
-					/>
-				</p>
-				<p>
 					<b>{t("hideZeroCommentPosts")}:</b>{" "}
 					<input
+						title={t("hideZeroCommentPosts")}
 						type="checkbox"
 						onChange={this.onChange.bind(
 							null,
@@ -87,6 +68,7 @@ class Options extends React.Component<OptionsProps, {}> {
 				<p>
 					<b>{t("postSort")}:</b>{" "}
 					<select
+						title={t("postSort")}
 						onChange={this.onChange.bind(null, "postSort")}
 						value={options.postSort}
 					>

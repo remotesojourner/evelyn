@@ -1,11 +1,8 @@
-# Karamel
+# Evelyn
 
-**Karamel** is an open-source extension that adds Reddit comments to any YouTube videos you watch.
+**Evelyn** is an open-source extension that adds Reddit comments to any Dropout videos you watch. Pretty much a copy of [Karamel](https://github.com/odensc/karamel)
 
-[**Download for Chrome**](https://chrome.google.com/webstore/detail/halllmdjninjohpckldgkaolbhgkfnpe)
-[**Download for Firefox**](https://addons.mozilla.org/en-US/firefox/addon/karamel/)
-
-[Changelog](https://github.com/odensc/karamel/blob/master/CHANGELOG.md)
+[Changelog](https://github.com/remotesojourner/Evelyn/blob/main/CHANGELOG.md)
 
 _Contributions welcome! If you have any questions related to development, a bug report, or feature request - feel free to create a new issue!_
 

@@ -1,11 +1,9 @@
 {
 	"manifest_version": 3,
-
-	"name": "Karamel: View Reddit comments on YouTube™",
-	"short_name": "Karamel",
-	"description": "Step up your viewing experience by embedding relevant Reddit comments under YouTube videos.",
-	"version": "2.0.1",
-
+	"name": "Evelyn: View Reddit comments on Dropout",
+	"short_name": "Evelyn",
+	"description": "Step up your viewing experience by embedding relevant Reddit comments under Dropout videos.",
+	"version": "0.1.0",
 	"action": {
 		"default_icon": "icon-48.png"
 	},
@@ -16,13 +14,19 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://*.youtube.com/*"],
-			"js": ["index.js"],
+			"matches": [
+				"https://*.dropout.tv/videos/*"
+			],
+			"js": [
+				"index.js"
+			],
 			"run_at": "document_end"
 		}
 	],
 	"background": {
-		"scripts": ["service-worker.js"]
+		"scripts": [
+			"service-worker.js"
+		]
 	},
 	"options_ui": {
 		"page": "options.html",
@@ -30,11 +34,14 @@
 	},
 	"browser_specific_settings": {
 		"gecko": {
-			"id": "{8989562c-bbbb-4868-9e50-b193b0772d6b}",
+			"id": "{c612d0e1-642f-49c0-aa7c-197b37798856}",
 			"strict_min_version": "127.0"
 		}
 	},
-
-	"permissions": ["storage"],
-	"host_permissions": ["https://www.reddit.com/"]
+	"permissions": [
+		"storage"
+	],
+	"host_permissions": [
+		"https://www.reddit.com/"
+	]
 }

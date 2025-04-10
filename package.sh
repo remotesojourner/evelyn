@@ -4,6 +4,6 @@ else
 	VERSION=$(jq -r ".version" src/assets/manifest-$BROWSER.json)
     mkdir -p builds/$BROWSER
 	cd dist-$BROWSER
-	zip -r ../builds/$BROWSER/karamel-$BROWSER-$VERSION.zip ./*
+	zip -r ../builds/$BROWSER/evelyn-$BROWSER-$VERSION.zip ./*
 fi
 

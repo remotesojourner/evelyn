@@ -8,10 +8,7 @@
 .loading img {
 	animation: spin 2s infinite linear;
 	width: 28px;
-
-	@at-root [dark] & {
-		filter: invert(100%);
-	}
+	filter: invert(100%);
 }
 
 @keyframes spin {

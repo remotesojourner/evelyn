@@ -8,7 +8,6 @@ import { Action, ActionTypes } from "./actions";
 import { State } from "./model";
 
 const initialState: State = {
-	description: "",
 	id: null
 };
 
@@ -29,11 +28,11 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 		mergeMap(action =>
 			action.payload.id
 				? [
-						requestPosts({
-							sort: state$.value.options.postSort,
-							videoId: action.payload.id
-						})
-				  ]
+					requestPosts({
+						sort: state$.value.options.postSort,
+						videoId: action.payload.id
+					})
+				]
 				: []
 		)
 	);

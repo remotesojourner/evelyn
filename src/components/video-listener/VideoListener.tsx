@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import * as elements from "common/elements";
 import { returnOf } from "common/util";
 import { State } from "data";
 import { update } from "data/video";
@@ -16,15 +15,13 @@ class VideoListener extends React.Component<
 	private intervalId: any;
 
 	checkLocation = () => {
-		const search = new URLSearchParams(location.search);
-		const id = search.get("v");
-		const description =
-			document.querySelector(elements.VIDEO_DESCRIPTION)?.textContent ||
-			"";
-		if (this.props.id !== id || this.props.description !== description) {
+		let id = "";
+		if (location.pathname.indexOf('/videos') >= 0) {
+			id = location.pathname
+		}
+		if (this.props.id !== id) {
 			this.props.update({
-				description,
-				id,
+				id: location.pathname,
 			});
 		}
 	};
@@ -44,7 +41,7 @@ class VideoListener extends React.Component<
 	}
 }
 
-export interface VideoListenerProps {}
+export interface VideoListenerProps { }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 	bindActionCreators(
@@ -55,7 +52,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 	);
 
 const mapStateToProps = (state: State) => ({
-	description: state.video.description,
 	id: state.video.id,
 });
 

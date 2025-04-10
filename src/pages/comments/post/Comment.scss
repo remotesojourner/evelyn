@@ -9,6 +9,7 @@
 	}
 
 	&.collapsed {
+
 		.footer,
 		.vote {
 			display: none;
@@ -16,6 +17,7 @@
 	}
 
 	&.deleted {
+
 		.footer li,
 		.vote {
 			display: none;
@@ -81,12 +83,8 @@
 	margin-bottom: 5px;
 
 	.collapse {
-		color: #369;
+		color: #2693e6;
 		margin: 0 1px 0 1px;
-
-		@at-root [dark] & {
-			color: #2693e6;
-		}
 	}
 
 	.author a {
@@ -99,26 +97,18 @@
 }
 
 .body {
-	color: #222;
+	color: #e3e3e3;
 	font-size: 14px;
 	margin-bottom: 6px;
 
-	@at-root [dark] & {
-		color: #e3e3e3;
-
-		a {
-			color: #2693e6;
-		}
-	}
-
 	a {
-		color: #0079d3;
+		color: #2693e6;
 		text-decoration: none;
 	}
 
 	blockquote,
 	p,
-	pre > code,
+	pre>code,
 	th,
 	td,
 	li,
@@ -137,23 +127,15 @@
 	}
 
 	blockquote {
-		border-left: 2px solid #c5c1ad;
+		border-left: 2px solid #777;
 		margin-left: 5px;
 		padding-left: 8px;
-
-		@at-root [dark] & {
-			border-left-color: #777;
-		}
 	}
 }
 
 .children {
-	border-left: 1px dotted #ddf;
+	border-left: 1px dotted #4a4a4a;
 	margin-top: 10px;
-
-	@at-root [dark] & {
-		border-left-color: #4a4a4a;
-	}
 
 	.comment:last-of-type {
 		margin-bottom: 0;

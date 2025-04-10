@@ -1,8 +1,6 @@
 {
 	"title": "Options",
 	"commentSort": "Sort comments by",
-	"default": "Show comments from (default)",
-	"hideYoutubeComments": "Hide YouTube comments by default (Uncheck if you want to see Reddit and YouTube at the same time)",
 	"hideZeroCommentPosts": "Hide Reddit posts with 0 comments",
 	"postSort": "Sort posts by"
 }
