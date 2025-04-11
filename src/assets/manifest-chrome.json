@@ -3,7 +3,7 @@
 	"name": "Evelyn: View Reddit comments on Dropout",
 	"short_name": "Evelyn",
 	"description": "Step up your viewing experience by embedding relevant Reddit comments under Dropout videos.",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"action": {
 		"default_icon": "icon-48.png"
 	},

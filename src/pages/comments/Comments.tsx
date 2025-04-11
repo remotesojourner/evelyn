@@ -12,8 +12,8 @@ import {
 	requestPosts,
 } from "data/reddit";
 
-import { ToggleButton } from "components/toggle-button";
 import { Loading } from "components/loading";
+import { ToggleButton } from "components/toggle-button";
 import style from "./Comments.scss";
 import { Post } from "./post";
 import { PostList } from "./post-list";
