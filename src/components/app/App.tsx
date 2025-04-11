@@ -9,7 +9,6 @@ import { State } from "data";
 import { request as requestOptions } from "data/options";
 import { requestMe } from "data/reddit";
 
-import * as elements from "common/elements";
 import { VideoListener } from "components/video-listener";
 import { Comments } from "pages/comments";
 import { Options } from "pages/options";
@@ -22,6 +21,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 		this.props.requestMe();
 		this.props.requestOptions();
 		if (window.OPTIONS_PAGE) this.props.push("/options");
+		else this.props.push("/comments");
 	}
 
 	render() {
@@ -35,7 +35,7 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 
 				<div style={{ width: "100%", display: "block", }}>
 					<Route exact path="/options" component={Options} />
-					<Route path={/\/(?!options)/ as any} component={Comments} />
+					<Route exact path="/comments" component={Comments} />
 				</div>
 			</main>
 		);

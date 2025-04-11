@@ -1,6 +1,7 @@
 {
 	"title": "Options",
 	"commentSort": "Sort comments by",
+	"hideVideoDescription": "Hide video description by default",
 	"hideZeroCommentPosts": "Hide Reddit posts with 0 comments",
 	"postSort": "Sort posts by"
 }

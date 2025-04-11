@@ -54,6 +54,18 @@ class Options extends React.Component<OptionsProps, {}> {
 					</select>
 				</p>
 				<p>
+					<b>{t("hideVideoDescription")}:</b>{" "}
+					<input
+						title={t("hideVideoDescription")}
+						type="checkbox"
+						onChange={this.onChange.bind(
+							null,
+							"hideVideoDescription"
+						)}
+						checked={options.hideVideoDescription}
+					/>
+				</p>
+				<p>
 					<b>{t("hideZeroCommentPosts")}:</b>{" "}
 					<input
 						title={t("hideZeroCommentPosts")}

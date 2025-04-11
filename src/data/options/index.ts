@@ -10,6 +10,7 @@ import { State } from "./model";
 
 const initialState: State = {
 	commentSort: "best",
+	hideVideoDescription: true,
 	hideZeroCommentPosts: false,
 	postSort: "top",
 };

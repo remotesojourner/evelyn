@@ -30,7 +30,6 @@ const insertMountElement = (parent: Element) => {
 	element.classList.add("standard-width-container");
 	element.classList.add("row");
 	parent.appendChild(element);
-
 	return element;
 };
 

@@ -12,6 +12,7 @@ import {
 	requestPosts,
 } from "data/reddit";
 
+import { ToggleButton } from "components/toggle-button";
 import { Loading } from "components/loading";
 import style from "./Comments.scss";
 import { Post } from "./post";
@@ -88,6 +89,12 @@ class Comments extends React.Component<
 
 		return (
 			<section className={style.container}>
+				<ToggleButton
+					disabled={
+						!this.props.postsLoading &&
+						this.props.posts.length === 0
+					}
+				/>
 				<PostList
 					activePostId={post ? post.name : ""}
 					onPostClick={this.onPostClick}
