@@ -1,0 +1,50 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - run: npm ci
+      - name: Bump version in manifests and package.json
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          node tools/bump-version.js $VERSION
+      - name: Build Chrome
+        run: |
+          export BROWSER=chrome
+          npm run build
+          ./package.sh
+      - name: Build Firefox
+        run: |
+          export BROWSER=firefox
+          npm run build
+          ./package.sh
+      - name: Upload Chrome zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: evelyn-chrome
+          path: builds/chrome/evelyn-chrome-*.zip
+      - name: Upload Firefox zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: evelyn-firefox
+          path: builds/firefox/evelyn-firefox-*.zip
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            builds/chrome/evelyn-chrome-*.zip
+            builds/firefox/evelyn-firefox-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
