@@ -5,8 +5,9 @@
 	margin-right: 7px;
 	min-width: 15px;
 
-	.down, .up {
-		background-image: url("assets/vote.png");
+	.down,
+	.up {
+		background-image: url("../../../assets/vote.png");
 		background-repeat: no-repeat;
 		margin-top: 2px;
 		min-height: 15px;
@@ -14,7 +15,9 @@
 	}
 
 	&.noArrows {
-		.down, .up {
+
+		.down,
+		.up {
 			background-image: none;
 			pointer-events: none;
 		}

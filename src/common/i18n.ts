@@ -1,32 +1,20 @@
 import i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import XHR from "i18next-xhr-backend";
 
-function loadLocale(url: string, _: any, callback: any) {
-	try {
-		callback(require(`../translations/${url}.json`), { status: 200 });
-	} catch (e) {
-		callback(null, { status: 404 });
-	}
-}
+i18next.use(LanguageDetector).init({
+	detection: { caches: [] },
+	fallbackLng: "en",
+	interpolation: { escapeValue: false },
+	resources: {
+		en: {
+			comment: require("../translations/en/comment.json"),
+			footer: require("../translations/en/footer.json"),
+			options: require("../translations/en/options.json"),
+			post: require("../translations/en/post.json"),
+			reply: require("../translations/en/reply.json"),
+			time: require("../translations/en/time.json"),
+		},
+	},
+});
 
-export default i18next
-	.use(XHR)
-	.use(LanguageDetector)
-	.init({
-		backend: {
-			loadPath: "{{lng}}/{{ns}}",
-			parse: (data: any) => data,
-			ajax: loadLocale
-		},
-		detection: {
-			caches: []
-		},
-		fallbackLng: "en",
-		interpolation: {
-			escapeValue: false
-		},
-		react: {
-			wait: true
-		}
-	});
+export default i18next;

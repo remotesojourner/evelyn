@@ -1,4 +1,3 @@
-import { createMemoryHistory } from "history";
 import React from "react";
 import { render } from "react-dom";
 import { I18nextProvider } from "react-i18next";
@@ -10,14 +9,13 @@ import Router from "router";
 import configureStore from "store/configureStore";
 import "styles/global.scss";
 
-const history = createMemoryHistory();
-const store = configureStore(history);
+const store = configureStore();
 
 const renderRoot = (mountElement: HTMLElement) => {
 	render(
 		<I18nextProvider i18n={i18n}>
 			<Provider store={store}>
-				<Router history={history} />
+				<Router />
 			</Provider>
 		</I18nextProvider>,
 		mountElement

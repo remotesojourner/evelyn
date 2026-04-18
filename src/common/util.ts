@@ -5,4 +5,4 @@ export const formatScore = (score: number) => {
 	return `${thousands.toFixed(thousands < 100 ? 1 : 0)}k`;
 };
 
-export const returnOf = <A, T>(_: (a: A) => T): T => null!;
+

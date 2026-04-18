@@ -1,10 +1,10 @@
 const common = require("./common");
 const { join, resolve } = require("path");
-const webpack = require("webpack");
-const CleanPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
+	performance: false,
 	entry: {
 		index: [`${common.paths.src}/index.tsx`],
 		"service-worker": [`${common.paths.src}/service-worker.ts`],
@@ -31,24 +31,26 @@ module.exports = {
 
 			{
 				test: /\.(gif|png|jpe?g|svg)$/i,
-				use: common.loaders.images,
+				type: "asset",
+				parser: {
+					dataUrlCondition: { maxSize: 10000 },
+				},
 			},
 		],
 	},
 	plugins: [
-		new CleanPlugin([common.paths.dist], {
-			root: process.cwd(),
-			verbose: false,
+		new CleanWebpackPlugin(),
+		new CopyPlugin({
+			patterns: [
+				{ from: common.paths.static },
+				{
+					from: join(
+						common.paths.assets,
+						`manifest-${process.env.BROWSER}.json`
+					),
+					to: "manifest.json",
+				},
+			],
 		}),
-		new CopyPlugin([{ from: common.paths.static }]),
-		new CopyPlugin([
-			{
-				from: join(
-					common.paths.assets,
-					`manifest-${process.env.BROWSER}.json`
-				),
-				to: "manifest.json",
-			},
-		]),
 	],
 };

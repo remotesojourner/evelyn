@@ -8,7 +8,7 @@ _Contributions welcome! If you have any questions related to development, a bug 
 
 ## Dev Setup
 
-Requires **node v8** currently as we use some older libraries.
+Requires **Node.js LTS** (v20+).
 
 ```bash
 npm install
@@ -16,7 +16,7 @@ npm install
 BROWSER=chrome npm start
 ```
 
-Then load the `dist` folder as an unpacked extension.
+Then load the `dist-chrome` or `dist-firefox` folder as an unpacked extension.
 
 ## Build
 
@@ -24,3 +24,12 @@ Then load the `dist` folder as an unpacked extension.
 BROWSER=firefox npm run build
 BROWSER=firefox ./package.sh
 ```
+
+## Tech Stack
+
+- **React 18** with TypeScript 5
+- **Redux** + **redux-observable** (RxJS) for state management
+- **React Router v6** for in-extension navigation
+- **i18next** + **react-i18next** for translations
+- **Webpack 5** with Sass/PostCSS
+- **ESLint** with `@typescript-eslint` for linting

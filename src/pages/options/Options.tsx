@@ -1,15 +1,12 @@
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import { returnOf } from "common/util";
 import { State } from "data";
 import { update } from "data/options";
 import style from "./Options.scss";
 
-@translate(["options", "post"])
 class Options extends React.Component<OptionsProps, {}> {
 	onChange = (
 		key: string,
@@ -96,9 +93,7 @@ class Options extends React.Component<OptionsProps, {}> {
 	}
 }
 
-export type OptionsProps = InjectedTranslateProps &
-	RouteComponentProps<{}> &
-	ReduxProps;
+export type OptionsProps = WithTranslation & ReduxProps;
 
 const mapStateToProps = (state: State) => ({
 	me: state.reddit.me,
@@ -113,12 +108,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 		dispatch
 	);
 
-type ReduxProps = typeof StateProps & typeof DispatchProps;
-const StateProps = returnOf(mapStateToProps);
-const DispatchProps = returnOf(mapDispatchToProps);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = StateProps & DispatchProps;
 
-const ConnectedOptions = connect<typeof StateProps, typeof DispatchProps, {}>(
+const ConnectedOptions = connect<StateProps, DispatchProps, {}>(
 	mapStateToProps,
 	mapDispatchToProps
 )(Options);
-export { ConnectedOptions as Options };
+const TranslatedOptions = withTranslation(["options", "post"])(ConnectedOptions as any);
+export { TranslatedOptions as Options };

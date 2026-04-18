@@ -1,5 +1,4 @@
-import { RouterState } from "connected-react-router";
-import { combineEpics } from "redux-observable";
+import { combineEpics, Epic } from "redux-observable";
 
 import * as options from "./options";
 import * as reddit from "./reddit";
@@ -7,7 +6,6 @@ import * as video from "./video";
 
 export interface State {
 	reddit: reddit.State;
-	router: RouterState;
 	options: options.State;
 	video: video.State;
 }
@@ -17,7 +15,11 @@ export interface TypedAction<T extends string> {
 	payload?: {};
 }
 
-export const rootEpic = combineEpics(reddit.epic, options.epic, video.epic);
+export const rootEpic: Epic<any, any, State> = combineEpics(
+	reddit.epic as any,
+	options.epic as any,
+	video.epic as any
+);
 
 export default {
 	reddit: reddit.reducer,

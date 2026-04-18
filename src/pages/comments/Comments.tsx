@@ -1,9 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import { returnOf } from "common/util";
 import { State } from "data";
 import {
 	Post as RedditPost,
@@ -84,8 +82,20 @@ class Comments extends React.Component<
 	}
 
 	render() {
-		const { commentsLoading, postsLoading } = this.props;
+		const { commentsLoading, postsError, postsLoading } = this.props;
 		const { post } = this.state;
+
+		if (postsError === 'AUTH_REQUIRED') {
+			return (
+				<section className={style.container}>
+					<p style={{ padding: '1em' }}>
+						Could not load Reddit comments. Please{' '}
+						<a href="https://www.reddit.com/login" target="_blank">log in to Reddit</a>{' '}
+						and reload the page.
+					</p>
+				</section>
+			);
+		}
 
 		return (
 			<section className={style.container}>
@@ -101,7 +111,9 @@ class Comments extends React.Component<
 					posts={this.props.posts}
 				/>
 
-				{!postsLoading && post ? (
+				{postsLoading ? (
+					<Loading />
+				) : post ? (
 					<Post
 						comments={this.props.comments[post.name] || []}
 						commentsLoading={commentsLoading}
@@ -112,15 +124,13 @@ class Comments extends React.Component<
 						post={post}
 						sort={this.state.sort[post.name] || "best"}
 					/>
-				) : (
-					<Loading />
-				)}
+				) : null}
 			</section>
 		);
 	}
 }
 
-export interface CommentsProps extends RouteComponentProps<{}> { }
+export interface CommentsProps { }
 
 interface CommentsState {
 	post?: RedditPost;
@@ -136,6 +146,7 @@ const mapStateToProps = (state: State) => ({
 	posts: state.options.hideZeroCommentPosts
 		? state.reddit.posts.filter((post) => post.num_comments > 0)
 		: state.reddit.posts,
+	postsError: state.reddit.postsError,
 	postsLoading: state.reddit.postsLoading,
 });
 
@@ -149,13 +160,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 		dispatch
 	);
 
-type ReduxProps = typeof StateProps & typeof DispatchProps;
-const StateProps = returnOf(mapStateToProps);
-const DispatchProps = returnOf(mapDispatchToProps);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = StateProps & DispatchProps;
 
 const ConnectedComments = connect<
-	typeof StateProps,
-	typeof DispatchProps,
+	StateProps,
+	DispatchProps,
 	CommentsProps
 >(
 	mapStateToProps,

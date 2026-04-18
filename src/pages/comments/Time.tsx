@@ -1,12 +1,11 @@
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 import { format } from "common/time";
 
 const UPDATE_INTERVAL = 10000;
 
-@translate("time")
-export class Time extends React.PureComponent<TimeProps, {}> {
+class TimeInner extends React.PureComponent<TimeProps, {}> {
 	private intervalId: any;
 
 	componentDidMount() {
@@ -41,7 +40,9 @@ export class Time extends React.PureComponent<TimeProps, {}> {
 	}
 }
 
-interface TimeProps extends InjectedTranslateProps {
+interface TimeProps extends WithTranslation {
 	created: number;
 	edited?: number | false;
 }
+
+export const Time = withTranslation("time")(TimeInner);

@@ -1,13 +1,12 @@
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 import { save } from "common/reddit-api";
 
 import { ActionList } from "../ActionList";
 import { Reply } from "./Reply";
 
-@translate("footer")
-export class Footer extends React.Component<FooterProps, FooterState> {
+class FooterInner extends React.Component<FooterProps, FooterState> {
 	state: FooterState = {
 		replyOpen: false,
 		saved: false
@@ -65,7 +64,7 @@ export class Footer extends React.Component<FooterProps, FooterState> {
 	}
 }
 
-export interface FooterProps extends InjectedTranslateProps, React.HTMLProps<HTMLUListElement> {
+export interface FooterProps extends WithTranslation, React.HTMLProps<HTMLUListElement> {
 	id: string;
 	linkId: string;
 	modhash: string;
@@ -77,3 +76,5 @@ interface FooterState {
 	replyOpen: boolean;
 	saved: boolean;
 }
+
+export const Footer = withTranslation("footer")(FooterInner);

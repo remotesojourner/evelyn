@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import { formatScore, returnOf } from "common/util";
+import { formatScore } from "common/util";
 import { requestVote } from "data/reddit";
 
 import style from "./Vote.scss";
@@ -63,11 +63,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 		dispatch
 	);
 
-type ReduxProps = typeof DispatchProps;
-const DispatchProps = returnOf(mapDispatchToProps);
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = DispatchProps;
 
-const ConnectedVote = connect<{}, typeof DispatchProps, VoteProps>(
+const ConnectedVote = connect<{}, DispatchProps, VoteProps>(
 	null,
 	mapDispatchToProps
-)(Vote);
+)(Vote as any);
 export { ConnectedVote as Vote };

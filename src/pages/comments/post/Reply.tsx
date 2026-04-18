@@ -1,18 +1,17 @@
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { lastValueFrom } from "rxjs";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
 import { comment } from "common/reddit-api";
-import { returnOf } from "common/util";
 import { receiveMoreComments } from "data/reddit";
 
 import { ActionList } from "../ActionList";
 import style from "./Reply.scss";
 
-@translate("reply")
-class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
+class ReplyInner extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 	state = {
 		error: "",
 		loading: false,
@@ -29,11 +28,11 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 		this.setState({ error, loading: true });
 
 		try {
-			const data = await comment(
+			const data = await lastValueFrom(comment(
 				modhash,
 				parentId,
 				this.state.text
-			).toPromise();
+			));
 			this.props.receiveMoreComments({
 				comments: [data],
 				id: "",
@@ -70,7 +69,7 @@ class Reply extends React.Component<ReplyProps & ReduxProps, ReplyState> {
 	}
 }
 
-export interface ReplyProps extends InjectedTranslateProps {
+export interface ReplyProps extends WithTranslation {
 	linkId: string;
 	modhash: string;
 	onClose: () => void;
@@ -91,11 +90,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 		dispatch
 	);
 
-type ReduxProps = typeof DispatchProps;
-const DispatchProps = returnOf(mapDispatchToProps);
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = DispatchProps;
 
-const ConnectedReply = connect<{}, typeof DispatchProps, ReplyProps>(
+const ConnectedReply = connect<{}, DispatchProps, ReplyProps>(
 	null,
 	mapDispatchToProps
-)(Reply);
-export { ConnectedReply as Reply };
+)(ReplyInner);
+export const Reply = withTranslation("reply")(ConnectedReply as any);

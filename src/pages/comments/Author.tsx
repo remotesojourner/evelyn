@@ -34,7 +34,7 @@ export const Author = ({
 	const ids = distinguished ? [distinguished] : [];
 	if (submitter) ids.push("submitter");
 
-	const attrs = ids.map(id => attrMap[id]);
+	const attrs = ids.filter(id => id in attrMap).map(id => attrMap[id]);
 
 	return (
 		<span className={props.className || ""}>

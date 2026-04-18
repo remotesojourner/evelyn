@@ -4,6 +4,7 @@ export interface State {
 	me?: Me;
 	moreCommentsLoading: string[];
 	posts: Post[];
+	postsError: string | null;
 	postsLoading: boolean;
 }
 
@@ -27,12 +28,12 @@ export interface Comment {
 	name: string;
 	parent_id: string;
 	replies:
-		| ""
-		| {
-				data: {
-					children: { data: Comment }[];
-				};
-		  };
+	| ""
+	| {
+		data: {
+			children: { data: Comment }[];
+		};
+	};
 	saved: boolean;
 	score: number;
 	score_hidden: boolean;
@@ -59,4 +60,5 @@ export interface Post {
 	score: number;
 	subreddit: string;
 	title: string;
+	url: string;
 }

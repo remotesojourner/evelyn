@@ -3,7 +3,6 @@ import React from "react";
 import { connect } from "react-redux";
 
 import * as elements from "common/elements";
-import { returnOf } from "common/util";
 import { State } from "data";
 
 import style from "./ToggleButton.scss";
@@ -76,13 +75,13 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = () => ({
 });
 
-type ReduxProps = typeof StateProps & typeof DispatchProps;
-const StateProps = returnOf(mapStateToProps);
-const DispatchProps = returnOf(mapDispatchToProps);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = StateProps & DispatchProps;
 
 const ConnectedToggleButton = connect<
-	typeof StateProps,
-	typeof DispatchProps,
+	StateProps,
+	DispatchProps,
 	ToggleButtonProps
 >(
 	mapStateToProps,

@@ -1,28 +1,58 @@
 {
 	"compilerOptions": {
-		"downlevelIteration": true,
 		"module": "esnext",
-		"moduleResolution": "node",
-		"target": "es2015",
-
-		"baseUrl": "./src",
+		"moduleResolution": "bundler",
+		"target": "es2020",
+		"rootDir": "./src",
 		"outDir": "./dist",
-
+		"paths": {
+			"common/*": [
+				"./src/common/*"
+			],
+			"components/*": [
+				"./src/components/*"
+			],
+			"data": [
+				"./src/data"
+			],
+			"data/*": [
+				"./src/data/*"
+			],
+			"pages/*": [
+				"./src/pages/*"
+			],
+			"router": [
+				"./src/router.tsx"
+			],
+			"service-worker": [
+				"./src/service-worker.ts"
+			],
+			"store/*": [
+				"./src/store/*"
+			],
+			"styles/*": [
+				"./src/styles/*"
+			]
+		},
 		"jsx": "react",
-		"lib": ["dom", "es2017"],
-
+		"lib": [
+			"dom",
+			"es2020"
+		],
 		"strict": true,
 		"sourceMap": true,
-
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-
 		"allowSyntheticDefaultImports": true,
-		"experimentalDecorators": true,
-		"strictFunctionTypes": false
+		"strictFunctionTypes": false,
+		"types": [
+			"chrome"
+		]
 	},
-
-	"exclude": ["node_modules", "dist"]
+	"exclude": [
+		"node_modules",
+		"dist"
+	]
 }

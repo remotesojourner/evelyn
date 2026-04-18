@@ -15,12 +15,21 @@ chrome.runtime.onMessage.addListener(
 		fetch(BASE_URL + request.url, {
 			credentials: "include",
 			method: request.method,
+			headers: { "Accept": "application/json" },
 		})
 			.then(async (res) => {
-				if (!res.ok) sendResponse({ error: await res.text() });
-				else sendResponse({ data: await res.json() });
+				if (!res.ok) {
+					sendResponse({ error: `HTTP ${res.status}` });
+					return;
+				}
+				const text = await res.text();
+				if (text.trimStart().startsWith('<')) {
+					sendResponse({ error: "AUTH_REQUIRED" });
+					return;
+				}
+				sendResponse({ data: JSON.parse(text) });
 			})
-			.catch((error) => sendResponse({ error }));
+			.catch((error) => sendResponse({ error: String(error) }));
 
 		return true;
 	}

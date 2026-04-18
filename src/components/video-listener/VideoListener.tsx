@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import { returnOf } from "common/util";
 import { State } from "data";
 import { update } from "data/video";
 
@@ -15,14 +14,15 @@ class VideoListener extends React.Component<
 	private intervalId: any;
 
 	checkLocation = () => {
-		let id = "";
-		if (location.pathname.indexOf('/videos') >= 0) {
-			id = location.pathname
+		let id: string | null = null;
+		if (location.hostname.endsWith('dropout.tv')) {
+			const videosIndex = location.pathname.indexOf('/videos/');
+			if (videosIndex >= 0) {
+				id = location.pathname.slice(videosIndex); // e.g. "/videos/family"
+			}
 		}
 		if (this.props.id !== id) {
-			this.props.update({
-				id: location.pathname,
-			});
+			this.props.update({ id });
 		}
 	};
 
@@ -55,13 +55,13 @@ const mapStateToProps = (state: State) => ({
 	id: state.video.id,
 });
 
-type ReduxProps = typeof StateProps & typeof DispatchProps;
-const StateProps = returnOf(mapStateToProps);
-const DispatchProps = returnOf(mapDispatchToProps);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = StateProps & DispatchProps;
 
 const ConnectedVideoListener = connect<
-	typeof StateProps,
-	typeof DispatchProps,
+	StateProps,
+	DispatchProps,
 	VideoListenerProps
 >(
 	mapStateToProps,

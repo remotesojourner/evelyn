@@ -1,10 +1,8 @@
-import { push } from "connected-react-router";
 import React from "react";
 import { connect } from "react-redux";
-import { Route } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
-import { returnOf } from "common/util";
 import { State } from "data";
 import { request as requestOptions } from "data/options";
 import { requestMe } from "data/reddit";
@@ -17,11 +15,9 @@ import style from "./App.scss";
 
 class App extends React.Component<AppProps & ReduxProps, {}> {
 
-	componentWillMount() {
+	componentDidMount() {
 		this.props.requestMe();
 		this.props.requestOptions();
-		if (window.OPTIONS_PAGE) this.props.push("/options");
-		else this.props.push("/comments");
 	}
 
 	render() {
@@ -34,8 +30,10 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 				)}
 
 				<div style={{ width: "100%", display: "block", }}>
-					<Route exact path="/options" component={Options} />
-					<Route exact path="/comments" component={Comments} />
+					<Routes>
+						<Route path="/options" element={<Options />} />
+						<Route path="/comments" element={<Comments />} />
+					</Routes>
 				</div>
 			</main>
 		);
@@ -45,7 +43,6 @@ class App extends React.Component<AppProps & ReduxProps, {}> {
 export interface AppProps { }
 
 const mapStateToProps = (state: State) => ({
-	path: state.router.location.pathname,
 	posts: state.options.hideZeroCommentPosts
 		? state.reddit.posts.filter((post) => post.num_comments > 0)
 		: state.reddit.posts,
@@ -55,18 +52,17 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
 	bindActionCreators(
 		{
-			push,
 			requestMe,
 			requestOptions,
 		},
 		dispatch
 	);
 
-type ReduxProps = typeof StateProps & typeof DispatchProps;
-const StateProps = returnOf(mapStateToProps);
-const DispatchProps = returnOf(mapDispatchToProps);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = StateProps & DispatchProps;
 
-const ConnectedApp = connect<typeof StateProps, typeof DispatchProps, AppProps>(
+const ConnectedApp = connect<StateProps, DispatchProps, AppProps>(
 	mapStateToProps,
 	mapDispatchToProps
 )(App);

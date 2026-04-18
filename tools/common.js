@@ -1,5 +1,4 @@
 const { join, resolve } = require("path");
-const createMinifier = require("css-loader-minify-class");
 
 if (!process.env.BROWSER) throw new Error("set $BROWSER to chrome or firefox");
 
@@ -18,20 +17,21 @@ module.exports = {
 		css: [
 			"style-loader",
 
+			"@teamsupercell/typings-for-css-modules-loader",
+
 			{
-				loader: "typings-for-css-modules-loader",
+				loader: "css-loader",
 				options: {
-					namedExport: true,
-					modules: true,
-					camelCase: true,
-					sourceMap: process.env.NODE_ENV === "development",
-					localIdentName: "[name]__[local]--[hash:2]",
+					modules: {
+						namedExport: false,
+						exportLocalsConvention: "camelCase",
+						localIdentName:
+							process.env.NODE_ENV === "production"
+								? "[hash:base64:4]"
+								: "[name]__[local]--[hash:base64:2]",
+					},
 					importLoaders: 1,
-					minimize: process.env.NODE_ENV === "production",
-					getLocalIdent:
-						process.env.NODE_ENV === "production"
-							? createMinifier()
-							: undefined,
+					sourceMap: process.env.NODE_ENV === "development",
 				},
 			},
 
@@ -40,10 +40,7 @@ module.exports = {
 				options: { prepend: "#tube-mount" },
 			},
 
-			{
-				loader: "postcss-loader",
-				options: require("./postcss.config"),
-			},
+			"postcss-loader",
 
 			"resolve-url-loader",
 
@@ -51,23 +48,14 @@ module.exports = {
 				loader: "sass-loader",
 				options: {
 					sourceMap: true,
-					includePaths: [
-						resolve(
-							__dirname,
-							join("..", paths.src, paths.stylesName)
-						),
-					],
-				},
-			},
-		],
-		images: [
-			"url-loader?limit=10000",
-
-			{
-				loader: "image-webpack-loader",
-				options: {
-					// Only optimize in production.
-					bypassOnDebug: true,
+					sassOptions: {
+						loadPaths: [
+							resolve(
+								__dirname,
+								join("..", paths.src, paths.stylesName)
+							),
+						],
+					},
 				},
 			},
 		],

@@ -2,7 +2,6 @@ process.env.NODE_ENV = "development";
 const base = require("./webpack.base");
 const webpack = require("webpack");
 const ForkTsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
-const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
 module.exports = Object.assign(base, {
 	mode: "development",
@@ -13,20 +12,17 @@ module.exports = Object.assign(base, {
 				exclude: /node_modules/,
 				loader: "ts-loader",
 				options: {
-					transpileOnly: true
-				}
-			}
-		])
+					transpileOnly: true,
+				},
+			},
+		]),
 	},
 	plugins: base.plugins.concat([
-		new webpack.WatchIgnorePlugin([/.*\.scss\.d\.ts/]),
+		new webpack.WatchIgnorePlugin({ paths: [/.*\.scss\.d\.ts/] }),
 		new webpack.DefinePlugin({
-			"process.env.NODE_ENV": `"development"`
+			"process.env.NODE_ENV": `"development"`,
 		}),
-		new ForkTsCheckerPlugin({
-			tslint: true
-		}),
-		new FriendlyErrorsPlugin()
+		new ForkTsCheckerPlugin(),
 	]),
-	devtool: "inline-source-map"
+	devtool: "inline-source-map",
 });

@@ -9,6 +9,7 @@ export enum ActionTypes {
 	RECEIVE_MORE_COMMENTS = "reddit/RECEIVE_MORE_COMMENTS",
 	REQUEST_MORE_COMMENTS = "reddit/REQUEST_MORE_COMMENTS",
 	RECEIVE_POSTS = "reddit/RECEIVE_POSTS",
+	RECEIVE_POSTS_ERROR = "reddit/RECEIVE_POSTS_ERROR",
 	REQUEST_POSTS = "reddit/REQUEST_POSTS",
 	RECEIVE_VOTE = "reddit/RECEIVE_VOTE",
 	REQUEST_VOTE = "reddit/REQUEST_VOTE"
@@ -36,7 +37,7 @@ interface ReceiveMeAction extends TypedAction<ActionTypes.RECEIVE_ME> {
 	};
 }
 
-interface RequestMeAction extends TypedAction<ActionTypes.REQUEST_ME> {}
+interface RequestMeAction extends TypedAction<ActionTypes.REQUEST_ME> { }
 
 interface ReceiveMoreCommentsAction
 	extends TypedAction<ActionTypes.RECEIVE_MORE_COMMENTS> {
@@ -63,6 +64,12 @@ interface RequestMoreCommentsAction
 interface ReceivePostsAction extends TypedAction<ActionTypes.RECEIVE_POSTS> {
 	payload: {
 		posts: Post[];
+	};
+}
+
+interface ReceivePostsErrorAction extends TypedAction<ActionTypes.RECEIVE_POSTS_ERROR> {
+	payload: {
+		error: string;
 	};
 }
 
@@ -97,6 +104,7 @@ export type Action =
 	| ReceiveMoreCommentsAction
 	| RequestMoreCommentsAction
 	| ReceivePostsAction
+	| ReceivePostsErrorAction
 	| RequestPostsAction
 	| ReceiveVoteAction
 	| RequestVoteAction;
@@ -143,6 +151,11 @@ export const requestMoreComments = (
 export const receivePosts = (posts: Post[]): ReceivePostsAction => ({
 	type: ActionTypes.RECEIVE_POSTS,
 	payload: { posts }
+});
+
+export const receivePostsError = (error: string): ReceivePostsErrorAction => ({
+	type: ActionTypes.RECEIVE_POSTS_ERROR,
+	payload: { error }
 });
 
 export const requestPosts = (

@@ -1,7 +1,7 @@
 import classnames from "classnames";
 import { decode } from "he";
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 import { formatScore } from "common/util";
 import { Comment as RedditComment, Post } from "data/reddit";
@@ -12,8 +12,7 @@ import style from "./Comment.scss";
 import { Footer } from "./Footer";
 import { Vote } from "./Vote";
 
-@translate(["comment", "footer"])
-export class Comment extends React.Component<CommentProps, CommentState> {
+class CommentInner extends React.Component<CommentProps, CommentState> {
 	state: CommentState = {};
 
 	static getDerivedStateFromProps(props: CommentProps, state: CommentState) {
@@ -96,9 +95,9 @@ export class Comment extends React.Component<CommentProps, CommentState> {
 							{comment.score_hidden
 								? `[${t("score_hidden")}]`
 								: t("score", {
-										count: comment.score,
-										score: formatScore(comment.score)
-								  })}
+									count: comment.score,
+									score: formatScore(comment.score)
+								})}
 						</p>
 						&nbsp;
 						<Time
@@ -165,7 +164,7 @@ export class Comment extends React.Component<CommentProps, CommentState> {
 	}
 }
 
-export interface CommentProps extends InjectedTranslateProps {
+export interface CommentProps extends WithTranslation {
 	comment: RedditComment;
 	commentsLoading: boolean;
 	modhash: string;
@@ -182,3 +181,5 @@ export interface CommentProps extends InjectedTranslateProps {
 interface CommentState {
 	collapsed?: boolean;
 }
+
+export const Comment = withTranslation(["comment", "footer"])(CommentInner);

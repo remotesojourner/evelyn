@@ -1,6 +1,6 @@
 import { decode } from "he";
 import React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 import { Comment as RedditComment, Post as RedditPost } from "data/reddit";
 
@@ -12,8 +12,7 @@ import { Footer } from "./Footer";
 import style from "./Post.scss";
 import { Vote } from "./Vote";
 
-@translate("post")
-export class Post extends React.Component<PostProps, {}> {
+class PostInner extends React.Component<PostProps, {}> {
 	loadMore = (
 		parentId: string,
 		linkId: string,
@@ -123,7 +122,7 @@ export class Post extends React.Component<PostProps, {}> {
 	}
 }
 
-interface PostProps extends InjectedTranslateProps {
+interface PostProps extends WithTranslation {
 	comments: RedditComment[];
 	commentsLoading: boolean;
 	modhash: string;
@@ -139,3 +138,5 @@ interface PostProps extends InjectedTranslateProps {
 	): void;
 	onSortChange(e: React.ChangeEvent<HTMLSelectElement>): void;
 }
+
+export const Post = withTranslation("post")(PostInner);

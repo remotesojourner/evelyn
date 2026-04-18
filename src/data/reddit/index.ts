@@ -17,6 +17,7 @@ import {
 	receiveMe,
 	receiveMoreComments,
 	receivePosts,
+	receivePostsError,
 	receiveVote,
 } from "./actions";
 import { Comment, State } from "./model";
@@ -26,6 +27,7 @@ const initialState: State = {
 	commentsLoading: false,
 	moreCommentsLoading: [],
 	posts: [],
+	postsError: null,
 	postsLoading: false,
 };
 
@@ -77,7 +79,7 @@ export const reducer = (state = initialState, action: Action): State => {
 		}
 
 		case ActionTypes.REQUEST_POSTS: {
-			return Object.assign({}, state, { postsLoading: true });
+			return Object.assign({}, state, { postsLoading: true, postsError: null });
 		}
 
 		case ActionTypes.RECEIVE_COMMENTS: {
@@ -146,6 +148,14 @@ export const reducer = (state = initialState, action: Action): State => {
 			});
 		}
 
+		case ActionTypes.RECEIVE_POSTS_ERROR: {
+			return Object.assign({}, state, {
+				posts: [],
+				postsError: action.payload.error,
+				postsLoading: false,
+			});
+		}
+
 		case ActionTypes.RECEIVE_VOTE: {
 			const comments: Comment[] | undefined =
 				state.comments[action.payload.linkId];
@@ -207,12 +217,16 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 						),
 						map((comments) =>
 							receiveComments(comments, action.payload.linkId)
-						)
+						),
+						catchError((e) => { console.error('[evelyn] REQUEST_COMMENTS failed:', e); return of(receiveComments([], action.payload.linkId)); })
 					);
 				}
 
 				case ActionTypes.REQUEST_ME: {
-					return getMe().pipe(map((me) => receiveMe(me)));
+					return getMe().pipe(
+						map((me) => receiveMe(me)),
+						catchError((e) => { console.error('[evelyn] REQUEST_ME failed:', e); return of(receiveMe(undefined)); })
+					);
 				}
 
 				case ActionTypes.REQUEST_MORE_COMMENTS: {
@@ -230,25 +244,39 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 								linkId: action.payload.linkId,
 								parentId: action.payload.parentId,
 							})
-						)
+						),
+						catchError((e) => { console.error('[evelyn] REQUEST_MORE_COMMENTS failed:', e); return of(receiveMoreComments({ comments: [], id: action.payload.id, linkId: action.payload.linkId, parentId: action.payload.parentId })); })
 					);
 				}
 
 				case ActionTypes.REQUEST_POSTS: {
+					const videoPath = action.payload.videoId;
 					return search({
-						q: `url:'${action.payload.videoId}'`,
+						q: `url:'dropout.tv${videoPath}'`,
 						sort: action.payload.sort,
 						type: "link",
 					}).pipe(
+						map((posts) => posts.filter((p) => {
+							try {
+								return new URL(p.url).pathname === videoPath;
+							} catch {
+								return false;
+							}
+						})),
 						map((posts) => receivePosts(posts)),
-						catchError(() => of(receivePosts([])))
+						catchError((e: string) => of(
+							e === 'AUTH_REQUIRED'
+								? receivePostsError('AUTH_REQUIRED')
+								: receivePosts([])
+						))
 					);
 				}
 
 				case ActionTypes.REQUEST_VOTE: {
 					const { dir, id, linkId } = action.payload;
 					return vote(state$.value.reddit.me!.modhash, id, dir).pipe(
-						map(() => receiveVote({ dir, id, linkId }))
+						map(() => receiveVote({ dir, id, linkId })),
+						catchError((e) => { console.error('[evelyn] REQUEST_VOTE failed:', e); return []; })
 					);
 				}
 
