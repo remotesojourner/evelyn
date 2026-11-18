@@ -2,6 +2,7 @@ export interface State {
 	comments: { [id: string]: Comment[] | undefined };
 	commentsLoading: boolean;
 	me?: Me;
+	meLoading: boolean;
 	moreCommentsLoading: string[];
 	posts: Post[];
 	postsError: string | null;

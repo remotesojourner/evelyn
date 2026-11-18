@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Action, Dispatch, bindActionCreators } from "redux";
 
+import { sendRuntimeMessage } from "common/reddit-api";
 import { State } from "data";
 import {
 	Post as RedditPost,
@@ -42,6 +43,10 @@ class Comments extends React.Component<
 		this.setState({ post });
 	};
 
+	openOptions = () => {
+		sendRuntimeMessage({ action: "OPEN_OPTIONS" }).catch(() => {});
+	};
+
 	onSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		this.props.requestComments(this.state.post!.name, e.target.value);
 		this.setState({
@@ -55,7 +60,18 @@ class Comments extends React.Component<
 	selectFirstPost = (posts: RedditPost[]) =>
 		posts.length > 0 && this.setState({ post: posts[0] });
 
+	componentDidMount() {
+		if (this.props.posts.length > 0 && !this.state.post) {
+			this.selectFirstPost(this.props.posts);
+		}
+	}
+
 	componentDidUpdate(prevProps: ReduxProps, prevState: CommentsState) {
+		if (this.props.posts.length === 0 && this.state.post) {
+			this.setState({ post: undefined });
+			return;
+		}
+
 		// Select first post if it's the first load
 		if (
 			!this.props.posts.every(
@@ -85,13 +101,47 @@ class Comments extends React.Component<
 		const { commentsLoading, postsError, postsLoading } = this.props;
 		const { post } = this.state;
 
-		if (postsError === 'AUTH_REQUIRED') {
+		if (postsError) {
 			return (
 				<section className={style.container}>
-					<p style={{ padding: '1em' }}>
-						Could not load Reddit comments. Please{' '}
-						<a href="https://www.reddit.com/login" target="_blank">log in to Reddit</a>{' '}
-						and reload the page.
+					<p style={{ padding: "1em", fontSize: "13px", lineHeight: 1.5 }}>
+						{postsError === "AUTH_REQUIRED" ? (
+							<>
+								Could not load Reddit comments. Please{" "}
+								<a
+									href="https://www.reddit.com/login"
+									target="_blank"
+									rel="noopener noreferrer"
+									style={{ color: "#2693e6", textDecoration: "underline" }}
+								>
+									log in to Reddit
+								</a>{" "}
+								and reload the page.
+							</>
+						) : postsError === "PERMISSION_REQUIRED" ? (
+							<>
+								Could not load Reddit comments because access to{" "}
+								<code>oauth.reddit.com</code> is not enabled in the
+								extension&apos;s site permissions.{" "}
+								<button
+									type="button"
+									onClick={this.openOptions}
+									style={{
+										color: "#2693e6",
+										textDecoration: "underline",
+										cursor: "pointer",
+									}}
+								>
+									Open extension options
+								</button>{" "}
+								to grant access (or remove and re-load the unpacked
+								extension in Chrome / enable permissions in{" "}
+								<code>about:addons</code> on Firefox), then reload this
+								page.
+							</>
+						) : (
+							<>Could not load Reddit comments ({postsError}).</>
+						)}
 					</p>
 				</section>
 			);
@@ -122,9 +172,13 @@ class Comments extends React.Component<
 						moreCommentsLoading={this.props.moreCommentsLoading}
 						onSortChange={this.onSortChange}
 						post={post}
-						sort={this.state.sort[post.name] || "best"}
+						sort={this.state.sort[post.name] || this.props.commentSort}
 					/>
-				) : null}
+				) : (
+					<p style={{ padding: "1em", color: "#888" }}>
+						No Reddit discussions found for this video.
+					</p>
+				)}
 			</section>
 		);
 	}

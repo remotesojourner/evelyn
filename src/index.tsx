@@ -31,17 +31,29 @@ const insertMountElement = (parent: Element) => {
 	return element;
 };
 
-const observer = new MutationObserver(() => {
+const mountComments = () => {
+	if (document.getElementById("tube-mount")) return true;
+
 	const watchInfoSection = document.getElementById(WATCH_INFO);
 	if (watchInfoSection) {
-		observer.disconnect();
 		const mount = insertMountElement(watchInfoSection);
 		renderRoot(mount);
+		return true;
 	}
-});
+
+	return false;
+};
 
 if (window.OPTIONS_PAGE) {
 	renderRoot(document.getElementById("tube-mount")!);
-} else {
-	observer.observe(document.body, { childList: true, subtree: true });
+} else if (!mountComments()) {
+	const observer = new MutationObserver(() => {
+		if (mountComments()) {
+			observer.disconnect();
+		}
+	});
+	observer.observe(document.body || document.documentElement, {
+		childList: true,
+		subtree: true,
+	});
 }

@@ -8,9 +8,33 @@ import { State } from "data";
 import style from "./ToggleButton.scss";
 
 class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
-	onButtonClick = () => {
-		if (this.props.disabled) return;
+	private userToggled = false;
 
+	private getDescriptionElement = (): HTMLElement | null => {
+		const watchInfoSection = document.getElementById(elements.WATCH_INFO);
+		const description = watchInfoSection?.firstElementChild as HTMLElement | null;
+		if (!description || description.id === "tube-mount") return null;
+		return description;
+	};
+
+	private syncDescriptionVisibility = () => {
+		if (this.userToggled) return;
+
+		const description = this.getDescriptionElement();
+		if (!description) return;
+
+		if (this.props.hideVideoDescription && !this.props.disabled) {
+			description.style.display = "none";
+		} else {
+			description.style.display = "";
+		}
+	};
+
+	onButtonClick = () => {
+		const description = this.getDescriptionElement();
+		if (this.props.disabled && description?.style.display !== "none") return;
+
+		this.userToggled = true;
 		this.updateCommentDisplay();
 	};
 
@@ -20,29 +44,33 @@ class ToggleButton extends React.Component<ToggleButtonProps & ReduxProps, {}> {
 	};
 
 	updateCommentDisplay() {
-		const watchInfoSection = document.getElementById(elements.WATCH_INFO);
-		if (watchInfoSection) {
-			const description = watchInfoSection.firstElementChild as HTMLElement;
-			if (description) {
-				if (description.style.display === "none") {
-					description.style.display = "block";
-				} else {
-					description.style.display = "none";
-				}
+		const description = this.getDescriptionElement();
+		if (description) {
+			if (description.style.display === "none") {
+				description.style.display = "";
+			} else {
+				description.style.display = "none";
 			}
 		}
 	}
 
-	componentWillReceiveProps(nextProps: ReduxProps) {
-		const watchInfoSection = document.getElementById(elements.WATCH_INFO);
-		if (watchInfoSection) {
-			const description = watchInfoSection.firstElementChild as HTMLElement;
-			if (description)
-				if (nextProps.hideVideoDescription) {
-					description.style.display = "none";
-				} else {
-					description.style.display = "block";
-				}
+	componentDidMount() {
+		this.syncDescriptionVisibility();
+	}
+
+	componentDidUpdate(prevProps: ToggleButtonProps & ReduxProps) {
+		if (prevProps.hideVideoDescription !== this.props.hideVideoDescription) {
+			this.userToggled = false;
+		}
+		this.syncDescriptionVisibility();
+	}
+
+	componentWillUnmount() {
+		if (!this.userToggled) {
+			const description = this.getDescriptionElement();
+			if (description && description.style.display === "none") {
+				description.style.display = "";
+			}
 		}
 	}
 

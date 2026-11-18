@@ -2,10 +2,54 @@ import { from, throwError } from "rxjs";
 import { map, mergeMap } from "rxjs/operators";
 
 import { Comment, Me } from "data/reddit";
-import { FetchRequest, FetchResponse } from "service-worker";
+import { FetchRequest, FetchResponse, WorkerRequest } from "service-worker";
 
 const buildQuery = (params: Record<string, string | number>) =>
 	new URLSearchParams(params as any).toString();
+
+export const sendRuntimeMessage = (
+	msg: WorkerRequest
+): Promise<FetchResponse | undefined> => {
+	const runtimeApi =
+		(globalThis as any).browser?.runtime || chrome.runtime;
+	return new Promise((resolve, reject) => {
+		let settled = false;
+		const finish = (res?: FetchResponse) => {
+			if (!settled) {
+				settled = true;
+				resolve(res);
+			}
+		};
+		const fail = (err: unknown) => {
+			if (!settled) {
+				settled = true;
+				reject(err);
+			}
+		};
+
+		try {
+			const maybePromise = runtimeApi.sendMessage(
+				msg,
+				(res: FetchResponse | undefined) => {
+					if (chrome.runtime.lastError) {
+						fail(chrome.runtime.lastError.message);
+					} else {
+						finish(res);
+					}
+				}
+			);
+			if (maybePromise && typeof maybePromise.then === "function") {
+				maybePromise.then(finish, fail);
+			}
+		} catch {
+			try {
+				runtimeApi.sendMessage(msg).then(finish, fail);
+			} catch (err) {
+				fail(err);
+			}
+		}
+	});
+};
 
 const handleJsonError = (selector: (response: any) => any) => (res: any) => {
 	const error = res.json.errors[0];
@@ -14,7 +58,7 @@ const handleJsonError = (selector: (response: any) => any) => (res: any) => {
 };
 
 const ajax = (opts: FetchRequest) =>
-	from<Promise<FetchResponse | undefined>>(chrome.runtime.sendMessage(opts)).pipe(
+	from(sendRuntimeMessage(opts)).pipe(
 		mergeMap((res) => {
 			if (!res) return throwError('No response from service worker');
 			return res.error ? throwError(res.error) : [res.data];
@@ -36,7 +80,12 @@ export function comment(modhash: string, parentId: string, text: string) {
 
 export function getMe() {
 	return ajax({ url: `/api/me.json`, method: "GET" }).pipe(
-		map((res) => (res.data.modhash ? (res.data as Me) : undefined))
+		map((res) => {
+			const data = res?.data ?? res;
+			return data?.name
+				? ({ ...data, modhash: data.modhash || "" } as Me)
+				: undefined;
+		})
 	);
 }
 
@@ -84,7 +133,11 @@ export function search(query: QuerySearch) {
 	return ajax({
 		url: `/search.json?${buildQuery(query as any)}`,
 		method: "GET",
-	}).pipe(map((res) => res.data.children.map((c: any) => c.data)));
+	}).pipe(
+		map((res) =>
+			res?.data?.children ? res.data.children.map((c: any) => c.data) : []
+		)
+	);
 }
 
 export function vote(modhash: string, id: string, dir: number) {

@@ -34,6 +34,6 @@
     "storage"
   ],
   "host_permissions": [
-    "https://www.reddit.com/"
+    "https://oauth.reddit.com/*"
   ]
 }

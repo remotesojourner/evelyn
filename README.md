@@ -1,5 +1,7 @@
 # Evelyn
 
+**Important:** For the extension to work, you must be logged into reddit.com (due to recent Reddit changes).
+
 **Evelyn** is an open-source extension that adds Reddit comments to any Dropout videos you watch. Pretty much a copy of [Karamel](https://github.com/odensc/karamel)
 
 [Changelog](https://github.com/remotesojourner/Evelyn/blob/main/CHANGELOG.md)

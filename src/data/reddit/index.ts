@@ -1,3 +1,4 @@
+import { decode } from "he";
 import {
 	getMe,
 	getMoreChildren,
@@ -20,11 +21,12 @@ import {
 	receivePostsError,
 	receiveVote,
 } from "./actions";
-import { Comment, State } from "./model";
+import { Comment, Post, State } from "./model";
 
 const initialState: State = {
 	comments: {},
 	commentsLoading: false,
+	meLoading: false,
 	moreCommentsLoading: [],
 	posts: [],
 	postsError: null,
@@ -92,8 +94,15 @@ export const reducer = (state = initialState, action: Action): State => {
 			});
 		}
 
+		case ActionTypes.REQUEST_ME: {
+			return Object.assign({}, state, { meLoading: true });
+		}
+
 		case ActionTypes.RECEIVE_ME: {
-			return Object.assign({}, state, { me: action.payload.me });
+			return Object.assign({}, state, {
+				me: action.payload.me,
+				meLoading: false,
+			});
 		}
 
 		case ActionTypes.RECEIVE_MORE_COMMENTS: {
@@ -213,7 +222,9 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 						action.payload.sort
 					).pipe(
 						map((res) =>
-							res[1].data.children.map((c: any) => c.data)
+							res?.[1]?.data?.children
+								? res[1].data.children.map((c: any) => c.data)
+								: []
 						),
 						map((comments) =>
 							receiveComments(comments, action.payload.linkId)
@@ -251,24 +262,40 @@ export const epic: Epic<Action, any, GlobalState> = (action$, state$) =>
 
 				case ActionTypes.REQUEST_POSTS: {
 					const videoPath = action.payload.videoId;
+					const slugPath = videoPath.replace(/^\/+/, "");
 					return search({
-						q: `url:'dropout.tv${videoPath}'`,
+						q: `url:'dropout.tv${videoPath}' OR (site:dropout.tv url:'${slugPath}')`,
 						sort: action.payload.sort,
 						type: "link",
 					}).pipe(
-						map((posts) => posts.filter((p) => {
-							try {
-								return new URL(p.url).pathname === videoPath;
-							} catch {
-								return false;
-							}
-						})),
+						map((posts: Post[]) =>
+							posts.filter((p) => {
+								try {
+									const parsed = new URL(decode(p.url));
+									const pathname = parsed.pathname.replace(
+										/\/+$/,
+										""
+									);
+									return (
+										parsed.hostname.endsWith("dropout.tv") &&
+										(pathname === videoPath ||
+											pathname.endsWith(videoPath))
+									);
+								} catch {
+									return false;
+								}
+							})
+						),
 						map((posts) => receivePosts(posts)),
-						catchError((e: string) => of(
-							e === 'AUTH_REQUIRED'
-								? receivePostsError('AUTH_REQUIRED')
-								: receivePosts([])
-						))
+						catchError((e: unknown) => {
+							const message =
+								typeof e === "string" ? e : String(e);
+							console.error(
+								"[evelyn] REQUEST_POSTS failed:",
+								e
+							);
+							return of(receivePostsError(message));
+						})
 					);
 				}
 

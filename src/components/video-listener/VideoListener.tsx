@@ -18,7 +18,7 @@ class VideoListener extends React.Component<
 		if (location.hostname.endsWith('dropout.tv')) {
 			const videosIndex = location.pathname.indexOf('/videos/');
 			if (videosIndex >= 0) {
-				id = location.pathname.slice(videosIndex); // e.g. "/videos/family"
+				id = location.pathname.slice(videosIndex).replace(/\/+$/, ""); // e.g. "/videos/family"
 			}
 		}
 		if (this.props.id !== id) {
